@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Character_Player : MonoBehaviour
 {
+    // 角色通用脚本
     private CharacterController2D _chaControl;
 
-
+    // 角色状态
     private bool _isJump = false;
     private bool _isCrouch = false;
 
@@ -27,6 +28,7 @@ public class Character_Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 获取按键
         x = Input.GetAxis("Horizontal");
         y = Input.GetAxis("Vertical");
         xRaw = Input.GetAxisRaw("Horizontal");
@@ -39,6 +41,7 @@ public class Character_Player : MonoBehaviour
         //
         if (Input.GetButtonDown("Jump"))
             _isJump = true;
+        // 长按C键下蹲
         if (Input.GetButtonDown("Crouch"))
             _isCrouch = true;
         else if (Input.GetButtonUp("Crouch"))
@@ -51,5 +54,5 @@ public class Character_Player : MonoBehaviour
         _isJump = false;
     }
 
-   
+
 }

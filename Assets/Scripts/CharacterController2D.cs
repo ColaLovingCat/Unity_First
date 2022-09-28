@@ -9,16 +9,17 @@ public class CharacterController2D : MonoBehaviour
     private Animator _animator;
     public AudioSource _jumpAudio;
 
-    // Move Info
-    private float _running; // record moving status
-    [SerializeField] private float _movementSpeed = 6f;
-    [Range(0, 0.3f)] [SerializeField] private float _movementSmoothing = 0.05f; // How much to smooth out the movement
+    /** MoveConfig **/
+    // 序列化，可在面板上读取到数据
+    [HideInInspector][SerializeField] private float _running; // record moving status
+    [HideInInspector][SerializeField] private float _movementSpeed = 6f; // moving speed
+    [Range(0, 0.3f)][SerializeField] private float _movementSmoothing = 0.05f; // How much to smooth out the movement
 
     // Jump Info
     [SerializeField] private float _jumpForce = 8f; // Amount of force added when the player jumps.
-    [SerializeField] private bool _canAirControl = false; // Whether or not a player can steer while jumping;
-    [Range(1, 2)] [SerializeField] private int _jumpDefaultCount = 2; // Whether or not a player can steer while jumping;
-    private int _jumpCount; // Whether or not a player can steer while jumping;
+    [HideInInspector][SerializeField] private bool _canAirControl = false; // Whether or not a player can steer while jumping;
+    [Range(1, 2)][SerializeField] private int _jumpDefaultCount = 2; // Whether or not a player can steer while jumping;
+    private int _jumpCount; //
     private bool _isLanded; // Whether or not a player can steer while jumping;
     // Ground Info
     private bool _isGrounded; // Whether or not the player is grounded
@@ -28,7 +29,7 @@ public class CharacterController2D : MonoBehaviour
 
     // Crouch Info
     private bool _isCrouch, _canStand; // Whether or not the player is crouched
-    [Range(0, 1)] [SerializeField] private float _crouchSpeed = 0.36f; // Amount of maxSpeed applied to crouching movement. 1 = 100%
+    [Range(0, 1)][SerializeField] private float _crouchSpeed = 0.36f; // Amount of maxSpeed applied to crouching movement. 1 = 100%
     // Ceiling Info
     [SerializeField] public Transform _ceilingCheck; // A position marking where to check for ceilings
     const float _ceilingCheckRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
@@ -69,6 +70,12 @@ public class CharacterController2D : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 暴露在外的移动方法
+    /// </summary>
+    /// <param name="move">左右移动方向</param>
+    /// <param name="crouch">是否下蹲</param>
+    /// <param name="jump">是否跳跃</param>
     public void Move(float move, bool crouch, bool jump)
     {
         if (!_isHurt)
@@ -80,9 +87,16 @@ public class CharacterController2D : MonoBehaviour
         SwitchAnimation();
     }
 
+    /// <summary>
+    /// 移动脚本
+    /// </summary>
+    /// <param name="move"></param>
+    /// <param name="crouch"></param>
     void Movement(float move, bool crouch)
     {
+        // 重置站立状态
         _canStand = true;
+        // 判断
         if (Physics2D.OverlapCircle(_ceilingCheck.position, _ceilingCheckRadius, _ground))
         {
             _canStand = false;
@@ -132,16 +146,24 @@ public class CharacterController2D : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 角色转向
+    /// </summary>
     private void Flip()
     {
         // Switch the way the player is labelled as facing.
         _facingRight = !_facingRight;
         // Multiply the player's x local scale by -1.
+        // 通过scale来设置左右的动画
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
     }
 
+    /// <summary>
+    /// 跳跃脚本
+    /// </summary>
+    /// <param name="jump"></param>
     private void Jump(bool jump)
     {
         // If the player should jump...
@@ -191,10 +213,11 @@ public class CharacterController2D : MonoBehaviour
 
     void SwitchAnimation()
     {
+        // 奔跑
         _animator.SetFloat("running", Mathf.Abs(_running));
-        //
+        // 下蹲
         _animator.SetBool("isCrouch", _isCrouch);
-        //
+        // 跳跃|降落
         _animator.SetBool("isJump", !_isGrounded);
         _animator.SetBool("isFall", false);
         if (!_isGrounded && _rigidbody2D.velocity.y <= 0)
@@ -202,21 +225,25 @@ public class CharacterController2D : MonoBehaviour
             _animator.SetBool("isJump", false);
             _animator.SetBool("isFall", true);
         }
-        //
+        // 重返地面
         if (_isLanded)
         {
             _animator.SetTrigger("triLanded");
         }
-        //
+        // 受伤
         _animator.SetBool("isHurt", _isHurt);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     private void OnDrawGizmos()
     {
+        // 地面检测
         Gizmos.color = Color.green;
         if (_isGrounded) { Gizmos.color = Color.red; }
         Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
-        //
+        // 头顶检测
         Gizmos.color = Color.red;
         if (_canStand) { Gizmos.color = Color.green; }
         Gizmos.DrawWireSphere(_ceilingCheck.position, _ceilingCheckRadius);
