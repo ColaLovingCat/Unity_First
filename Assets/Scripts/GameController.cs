@@ -14,11 +14,22 @@ public class GameController : MonoBehaviour
         Instance = this;
     }
 
-    public int totalScore;
-    public Text Txt_Score;
-    public void UpdateTotalScore()
+    public void RefreshGameInfos()
     {
         this.Txt_Score.text = totalScore.ToString();
+        this.Txt_Health.text = playerHealth.ToString();
+    }
+
+    public Text Txt_Score;
+    public int totalScore;
+
+    public Text Txt_Health;
+    public int playerHealth = 5;
+    public int totalHealth = 5; // я╙а©иооч
+    public void UpdateHealth(int value)
+    {
+        playerHealth += value;
+        playerHealth = playerHealth < totalHealth ? playerHealth : totalHealth;
     }
 
     public void Restart()

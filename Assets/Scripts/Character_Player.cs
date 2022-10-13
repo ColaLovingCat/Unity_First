@@ -28,17 +28,17 @@ public class Character_Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // 获取按键
-        x = Input.GetAxis("Horizontal");
-        y = Input.GetAxis("Vertical");
-        xRaw = Input.GetAxisRaw("Horizontal");
-        yRaw = Input.GetAxisRaw("Vertical");
         // 角色掉落，重置游戏
         if (transform.position.y < deadLiney)
         {
             GameController.Instance.Restart();
         }
-        //
+        // 获取按键
+        x = Input.GetAxis("Horizontal");
+        y = Input.GetAxis("Vertical");
+        xRaw = Input.GetAxisRaw("Horizontal");
+        yRaw = Input.GetAxisRaw("Vertical");
+        // 单机空格键跳跃
         if (Input.GetButtonDown("Jump"))
             _isJump = true;
         // 长按C键下蹲
@@ -51,8 +51,8 @@ public class Character_Player : MonoBehaviour
     void FixedUpdate()
     {
         _chaControl.Move(xRaw, _isCrouch, _isJump);
+        //
         _isJump = false;
     }
-
 
 }

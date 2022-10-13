@@ -22,28 +22,31 @@ public class CollectionController : MonoBehaviour
     {
         if (other.gameObject.tag == "player")
         {
+
             _spriteRenderer.enabled = false;
+
             _collider2D.enabled = false;
             //
-            Debug.Log(ItemType);
             switch (ItemType)
             {
-                case "Score":
+                case "Score": // 增加积分
                     {
                         GameController.Instance.totalScore += ItemScore;
-                        GameController.Instance.UpdateTotalScore();
+                        GameController.Instance.RefreshGameInfos();
                         break;
                     }
-                case "Health":
+                case "Health": // 增加血量
                     {
+                        GameController.Instance.UpdateHealth(ItemScore);
+                        GameController.Instance.RefreshGameInfos();
                         break;
                     }
-                case "Bullet":
+                case "Bullet": // 增加弹药量
                     {
                         break;
                     }
             }
-            //
+            // 消除物品
             Destroy(gameObject, 0.2f);
         }
     }
