@@ -271,7 +271,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 3.7079647, y: 1}
+    m_SensorSize: {x: 3.106509, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -3898,6 +3898,7 @@ GameObject:
   - component: {fileID: 329124280}
   - component: {fileID: 329124279}
   - component: {fileID: 329124281}
+  - component: {fileID: 329124282}
   m_Layer: 5
   m_Name: Dialog_Enter
   m_TagString: Untagged
@@ -3982,6 +3983,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &329124282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329124277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fcaeb35a7a9d504bb353bafeedbfacf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &392448680
 GameObject:
   m_ObjectHideFlags: 0
@@ -4356,7 +4369,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.5918112, y: 0.83104837, z: -10}
+  m_LocalPosition: {x: -3.9976187, y: 0.8369304, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
