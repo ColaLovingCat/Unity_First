@@ -1,0 +1,115 @@
+diff a/Assets/Scripts/CharacterController2D.cs b/Assets/Scripts/CharacterController2D.cs	(rejected hunks)
+@@ -4,57 +4,77 @@
+ 
+ public class CharacterController2D : MonoBehaviour
+ {
+-    private Rigidbody2D _rigidbody2D;
+-    private Animator _animator;
+-    private Renderer _render;
+-    public AudioSource _jumpAudio;
++    private Rigidbody2D _rigidbody2D; // ����
++    private Animator _animator; // ����������
++    private Transform _transform; // Transform���
++    private Renderer _render; // ���ͼƬ��ʾ
++
++    public AudioSource _jumpAudio; // ��Ƶ������
++    public List<AudioClip> list; // ���������Ҫ���ŵ���Ƶ�б�
++
++    public float _healthMax = 5; // ���Ѫ��
++    private float health; // ��ǰѪ��
++
++    private bool canInput = true; // �ܷ�����ָ�����
+ 
+     // Move Config
+-    [HideInInspector][SerializeField] private float running; // ��¼�ƶ���״̬
+-    //
+-    [HideInInspector][SerializeField] private float _movementSpeed = 6f; // �ƶ��ٶ�
+-    [HideInInspector][Range(0, 0.3f)][SerializeField] private float _movementSmoothing = 0.05f; // How much to smooth out the movement
++    [HideInInspector][Range(0, 6f)][SerializeField] public float _moveSpeed = 6f; // �ƶ��ٶ�
++    public float _moveSmoothing = 0.05f; // �ƶ�˳����
++    private float moveState = 0; // �ƶ�״̬
++    private bool facingRight = true;  // �Ƿ�������
+ 
+-    // Jump Info
++    // [Jump] Config
++    public int _jumpMax = 2; // �����Ծ����
++    public float _jumpSpeed = 8f; // ��Ծ�ٶ�
+     private bool jumpPressed = false; // �Ƿ�����Ծ��
+-    [HideInInspector][SerializeField] private int jumpCount; // ����Ծ������¼
+-    private bool isLanded;
++    private int jumpCount = 0; // ��ǰ��Ծ����
++    private bool isJump = false; // �Ƿ�����أ��ܷ���Ծ
++    private bool isGrounded = false; // �Ƿ�����أ��ܷ���Ծ
++    private bool isFalling; // �Ƿ���״̬
+     //
+-    [HideInInspector][Range(0, 8f)][SerializeField] private float _jumpForce = 8f; // ��Ծ����
+-    [HideInInspector][SerializeField] private int _jumpAllowCount = 2; // �����Ծ����
+-    [HideInInspector][SerializeField] private bool _canAirControl = false; // �ڿ����Ƿ����ת��
+-    [HideInInspector][SerializeField] private float fallGravityMultiplier = 2; // ������ٶȱ���
++    public bool _canAirControl = false; // �ڿ����Ƿ����ת��
++    private float _fallingGravity = 2; // ������ٶȱ���
+     //
+-    [SerializeField] private bool isGrounded = false;
+-    //
+-    [HideInInspector] public LayerMask _ground; // �����ж�Ϊ�����ͼ��
+-    [HideInInspector][SerializeField] public Transform _groundCheck; // �ŵ��жϽӴ��ļ���
++    public LayerMask _ground; // �����ж�Ϊ�����ͼ��
++    public Transform _groundCheck; // �ŵ��жϽӴ��ļ���
+     const float _groundCheckRadius = .2f; // �ŵ��жϰ뾶
+ 
+-    // Crouch Info
+-    private bool isCrouch, _canStand; // Whether or not the player is crouched
+-    //
+-    [HideInInspector][Range(0, 1)][SerializeField] private float _crouchSpeed = 0.36f; // �¶׵��ƶ��ٶ�
+-    // Ceiling Info
+-    [HideInInspector][SerializeField] public Collider2D _colliderCeilingDisable; // ͷ����ײ�壬�¶�ʱʧЧ
+-    [HideInInspector][SerializeField] public Transform _ceilingCheck; // ͷ���жϽӴ��ļ���
+-    const float _ceilingCheckRadius = .2f; // ͷ���жϰ뾶
++    // Crouch Config
++    public Collider2D _ceilingCollider; // ͷ����ײ�壬�¶�ʱʧЧ
++    public Transform _ceilingCheck; // ͷ���жϽӴ��ļ���
++    public float _ceilingCheckRadius = .2f; // ͷ���жϰ뾶
++    public float _crouchSpeedRate = 0.36f; // �¶׵��ƶ��ٶ�
++    private bool crouchPressed = false; // �Ƿ����¶׼�
++    private bool isCrouch; // Whether or not the player is crouched
++    private bool canStand; // �ж��Ƿ��վ��
+ 
+-    private Vector3 velocity = Vector3.zero;
+-    private bool _facingRight = true;  // For determining which way the player is currently facing.
++    // Attack Config
++    public float _attckDamgeLight; // �ṥ���˺�
++    public float _attckDamgeHeavy; // �ع����˺�
++    public float _attackSpeedLight; // �ṥ�������ٶ�
++    public float _attackSpeedHeavy; // �ع��������ٶ�
++    private bool isAttack; // �Ƿ��ڹ���״̬
++    private int attackMode; // ����ģʽ
++    private int attackComboCount;// ��ǰ����������
+ 
+-    private bool isHurt; // ��ɫ����״̬
++    // Hit Config
++    public float _hurtForce = 2f; // ����ʱ�������ٶ�
++    private bool isHurt = false; // �Ƿ�������״̬
++    private bool isDefend = false; // �Ƿ����޵�״̬
++    //
++    public float _blinkTime; // ��˸���
++    private int blinkCount = 0; // ��˸����
+ 
+-    public float blinkTime;
+-    public int blinks;
+-    [HideInInspector][SerializeField] private float _hurtForce = 2f;
++    // Sliding Config
++    public float _slidSpeed = 6f; // �����ٶ�
++    private float canSliding; // �ܷ�����
+ 
+-    // �������
++    // Press Config
+     private float x, y;
+     private float xRaw, yRaw;
+-    // ��ɫ״̬
+-    private bool crouchPressed = false;
++    private Vector3 velocity = Vector3.zero;
+ 
++    // ��ʼ��
+     void Awake()
+     {
+         _rigidbody2D = GetComponent<Rigidbody2D>();

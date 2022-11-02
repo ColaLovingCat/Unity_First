@@ -32,6 +32,7 @@ public class GameController : MonoBehaviour
         playerHealth = playerHealth < totalHealth ? playerHealth : totalHealth;
     }
 
+    // 重新加载场景，参数为当前场景名字
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

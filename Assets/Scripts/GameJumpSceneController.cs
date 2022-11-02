@@ -11,6 +11,7 @@ public class GameJumpSceneController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
+            // ÇÐ»»³¡¾°
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
 
